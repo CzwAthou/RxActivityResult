@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gengqiquan.result.RxActivityResult;
 
-import io.reactivex.functions.Consumer;
+import java.util.function.Consumer;
+
 
 public class MainActivity extends AppCompatActivity {
 
