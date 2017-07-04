@@ -6,11 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gengqiquan.result.RxActivityResult;
 
-import io.reactivex.functions.Consumer;
+import rx.Subscriber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +23,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 RxActivityResult.with(MainActivity.this).putString("key", "笑一个")
                         .startActivityWithResult(new Intent(MainActivity.this, SecondActivity.class))
-                        .subscribe(new Consumer<Intent>() {
+                        .subscribe(new Subscriber<Intent>() {
                             @Override
-                            public void accept(Intent intent) throws Exception {
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                            }
+
+                            @Override
+                            public void onNext(Intent intent) {
                                 tv.setText(intent.getStringExtra("msg"));
                             }
                         });

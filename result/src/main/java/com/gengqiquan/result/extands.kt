@@ -7,9 +7,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import io.reactivex.Observable
+import rx.Observable
 import java.io.Serializable
-import java.util.*
 
 
 /**

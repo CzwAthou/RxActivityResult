@@ -8,10 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.subjects.PublishSubject;
+import rx.Observable;
+import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 
 
 /**
@@ -103,14 +102,14 @@ public class RxActivityResult {
                 v4Transaction = null;
             }
 
-            return subject.filter(new Predicate<Result>() {
+            return subject.filter(new Func1<Result, Boolean>() {
                 @Override
-                public boolean test(Result result) throws Exception {
+                public Boolean call(Result result) {
                     return request.code == result.code;
                 }
-            }).map(new Function<Result, Intent>() {
+            }).map(new Func1<Result, Intent>() {
                 @Override
-                public Intent apply(Result result) throws Exception {
+                public Intent call(Result result) {
                     return result.intent;
                 }
             });

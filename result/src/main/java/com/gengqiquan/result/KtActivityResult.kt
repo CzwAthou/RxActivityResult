@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
-import io.reactivex.Observable
-import io.reactivex.functions.Function
-import io.reactivex.functions.Predicate
-import io.reactivex.subjects.PublishSubject
+import rx.Observable
 
 
 /**
