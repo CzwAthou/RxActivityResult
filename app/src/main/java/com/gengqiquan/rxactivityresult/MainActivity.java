@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void accept(Intent intent) throws Exception {
                                 tv.setText(intent.getStringExtra("msg"));
-                                Toast.makeText(MainActivity.this,
-                                        intent.getStringExtra("msg"), Toast.LENGTH_SHORT).show();
                             }
                         });
             }
