@@ -28,6 +28,7 @@
 
 ```
 ### anko
+call in activity or fragment
 ```
  startActivityWithResult<ThirdActivity>("key" to "哭一个", "number" to 100)
                     .subscribe({ intent ->
