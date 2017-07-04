@@ -19,6 +19,7 @@ public class ThirdActivity extends Activity {
             public void onClick(View view) {
                 setResult(Activity.RESULT_OK, new Intent().putExtra("msg", "壮士打靶把营归"));
                 finish();
+
             }
         });
     }

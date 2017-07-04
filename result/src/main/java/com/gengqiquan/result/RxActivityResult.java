@@ -16,40 +16,25 @@ import io.reactivex.subjects.PublishSubject;
  * Created by gengqiquan on 2017/7/3.
  */
 
-public class RxResult {
-    Intent intent;
-    static final PublishSubject<Intent> subject = PublishSubject.create();
+public class RxActivityResult {
+    static PublishSubject<Intent> subject;
 
-//    public static Observable<Intent> start(Activity activity, final Intent intent) {
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable("data", intent);
-//        if (activity instanceof FragmentActivity) {
-//            final V4Fragment v4Fragment = new V4Fragment();
-//            v4Fragment.setArguments(bundle);
-//            ((FragmentActivity) activity).getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(android.R.id.content, v4Fragment)
-//                    .commitAllowingStateLoss();
-//        } else {
-//            final AppFragment appFragment = new AppFragment();
-//            appFragment.setArguments(bundle);
-//            activity.getFragmentManager()
-//                    .beginTransaction()
-//                    .replace(android.R.id.content, appFragment)
-//                    .commitAllowingStateLoss();
-//        }
-//        return subject;
-//    }
+    private RxActivityResult() {
+    }
 
-    public static <T extends Activity> Builder with(T activity) {
+    public static Builder with(Activity activity) {
         return new Builder(activity);
     }
 
-    public static <T extends android.app.Fragment> Builder with(T fragment) {
+    public static Builder with(FragmentActivity activity) {
+        return new Builder(activity);
+    }
+
+    public static Builder with(android.app.Fragment fragment) {
         return new Builder(fragment);
     }
 
-    public static <T extends Fragment> Builder with(T fragment) {
+    public static Builder with(Fragment fragment) {
         return new Builder(fragment);
     }
 
@@ -59,32 +44,47 @@ public class RxResult {
         android.app.FragmentTransaction appTransaction;
         FragmentTransaction v4Transaction;
 
+        private Builder() {
+        }
+
         @SuppressLint("CommitTransaction")
-        public <T> Builder(T t) {
-            if (t instanceof android.app.Fragment) {
-                appTransaction = ((android.app.Fragment) t).getActivity()
-                        .getFragmentManager()
-                        .beginTransaction();
-            } else if (t instanceof Fragment) {
-                isSuperV4 = true;
-                v4Transaction = ((Fragment) t).getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction();
-            } else if (t instanceof android.app.Activity) {
-                appTransaction = ((android.app.Activity) t).getFragmentManager()
-                        .beginTransaction();
-            } else if (t instanceof Fragment) {
-                isSuperV4 = true;
-                v4Transaction = ((FragmentActivity) t).getSupportFragmentManager()
-                        .beginTransaction();
-            }
+        private Builder(android.app.Fragment t) {
+            appTransaction = t.getActivity()
+                    .getFragmentManager()
+                    .beginTransaction();
 
         }
 
-        public Observable<Intent> start(final Intent intent) {
+        @SuppressLint("CommitTransaction")
+        private Builder(Fragment t) {
+            isSuperV4 = true;
+            v4Transaction = t.getActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction();
+        }
+
+        @SuppressLint("CommitTransaction")
+        private Builder(android.app.Activity t) {
+
+            appTransaction = ((android.app.Activity) t).getFragmentManager()
+                    .beginTransaction();
+
+
+        }
+
+        @SuppressLint("CommitTransaction")
+        private Builder(FragmentActivity t) {
+            isSuperV4 = true;
+            v4Transaction = t.getSupportFragmentManager()
+                    .beginTransaction();
+
+        }
+
+        public Observable<Intent> startActivityWithResult(final Intent intent) {
             if (intent == null) {
                 throw new RuntimeException("intent can not be null");
             }
+            subject = PublishSubject.create();
             intent.putExtras(data);
             Bundle bundle = new Bundle();
             bundle.putParcelable("data", intent);
@@ -101,6 +101,7 @@ public class RxResult {
                         .commitAllowingStateLoss();
                 v4Transaction = null;
             }
+
             return subject;
         }
 

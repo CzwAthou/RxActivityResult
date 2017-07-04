@@ -12,7 +12,7 @@ public class AppFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            RxResult.post(data);
+            RxActivityResult.post(data);
             this.getActivity().getFragmentManager().beginTransaction().detach(this).commit();
         }
         super.onActivityResult(requestCode, resultCode, data);
