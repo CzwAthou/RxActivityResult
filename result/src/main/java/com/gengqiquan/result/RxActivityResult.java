@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
 
@@ -17,7 +19,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class RxActivityResult {
-    static PublishSubject<Intent> subject;
+    static PublishSubject<Result> subject = PublishSubject.create();
 
     private RxActivityResult() {
     }
@@ -84,25 +86,34 @@ public class RxActivityResult {
             if (intent == null) {
                 throw new RuntimeException("intent can not be null");
             }
-            subject = PublishSubject.create();
+
             intent.putExtras(data);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("data", intent);
+            final Request request = new Request(intent, intent.hashCode());
             if (isSuperV4) {
                 final V4Fragment v4Fragment = new V4Fragment();
-                v4Fragment.setArguments(bundle);
+                v4Fragment.setRequest(request);
                 v4Transaction.replace(android.R.id.content, v4Fragment)
                         .commitAllowingStateLoss();
                 v4Transaction = null;
             } else {
                 final AppFragment appFragment = new AppFragment();
-                appFragment.setArguments(bundle);
+                appFragment.setRequest(request);
                 appTransaction.replace(android.R.id.content, appFragment)
                         .commitAllowingStateLoss();
                 v4Transaction = null;
             }
 
-            return subject;
+            return subject.filter(new Predicate<Result>() {
+                @Override
+                public boolean test(Result result) throws Exception {
+                    return request.code == result.code;
+                }
+            }).map(new Function<Result, Intent>() {
+                @Override
+                public Intent apply(Result result) throws Exception {
+                    return result.intent;
+                }
+            });
         }
 
         public Builder putBoolean(String key, boolean value) {
@@ -138,10 +149,10 @@ public class RxActivityResult {
 
     }
 
-    protected static void post(Intent intent) {
+    protected static void post(Result result) {
 
-        if (intent != null) {
-            subject.onNext(intent);
+        if (result.intent != null) {
+            subject.onNext(result);
         } else {
             subject.onError(new Exception("intent is null"));
         }

@@ -3,6 +3,7 @@ package com.gengqiquan.rxactivityresult;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,5 +32,11 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("onDestroy",this.getClass().getName());
     }
 }

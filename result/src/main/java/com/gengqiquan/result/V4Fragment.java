@@ -12,16 +12,27 @@ public class V4Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            RxActivityResult.post(data);
+            if (request != null) {
+                RxActivityResult.post(new Result(data, request.code));
+            }
+            request = null;
             this.getActivity().getSupportFragmentManager().beginTransaction().detach(this).commit();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    Request request;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Intent intent = getArguments().getParcelable("data");
-        startActivityForResult(intent, 0);
+        if (request != null) {
+            Intent intent = request.intent;
+            startActivityForResult(intent, 0);
+        }
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 }

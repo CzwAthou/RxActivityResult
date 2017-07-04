@@ -39,14 +39,14 @@
 
 ## gradle
 ```
-compile 'com.gengqiquan:rxactivityresult:0.0.2'
+compile 'com.gengqiquan:Rx2ActivityResult:0.0.1'
 ```
 ## maven
 ```
 <dependency>
   <groupId>com.gengqiquan</groupId>
-  <artifactId>rxactivityresult</artifactId>
-  <version>0.0.2</version>
+  <artifactId>Rx2ActivityResult</artifactId>
+  <version>0.0.1</version>
   <type>pom</type>
 </dependency>
 ```

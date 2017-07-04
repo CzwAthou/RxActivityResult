@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
 import io.reactivex.Observable
+import io.reactivex.functions.Function
+import io.reactivex.functions.Predicate
 import io.reactivex.subjects.PublishSubject
 
 
@@ -46,9 +48,9 @@ object RxKtResult {
     }
 
 
-    private fun post(intent: Intent?) {
-        if (intent != null) {
-            RxActivityResult.subject?.onNext(intent)
+    private fun post(result: Result) {
+        if (result.intent != null) {
+            RxActivityResult.subject?.onNext(result)
         } else {
             RxActivityResult.subject?.onError(Exception("intent is null"))
         }
@@ -106,25 +108,25 @@ class Suilder {
         if (intent == null) {
             throw RuntimeException("intent can not be null")
         }
-        RxActivityResult.subject = PublishSubject.create<Intent>()
         intent.putExtras(data)
-        val bundle = Bundle()
-        bundle.putParcelable("data", intent)
+        val request = Request(intent, intent.hashCode())
         if (isSuperV4) {
             val v4Fragment = V4Fragment()
-            v4Fragment.arguments = bundle
+            v4Fragment.setRequest(request)
             v4Transaction!!.replace(android.R.id.content, v4Fragment)
                     .commitAllowingStateLoss()
             v4Transaction = null
         } else {
             val appFragment = AppFragment()
-            appFragment.arguments = bundle
+            appFragment.setRequest(request)
             appTransaction?.replace(android.R.id.content, appFragment)
                     ?.commitAllowingStateLoss()
             v4Transaction = null
         }
 
-        return RxActivityResult.subject!!
+        return RxActivityResult.subject
+                .filter { result -> request.code == result.code }
+                .map { result -> result.intent }
     }
 
 
@@ -157,8 +159,9 @@ class Suilder {
         data.putBundle(key, value)
         return this
     }
+
     fun putAll(value: Bundle): Suilder {
-        data.putAll( value)
+        data.putAll(value)
         return this
     }
 
