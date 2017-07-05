@@ -1,5 +1,6 @@
 # RxActivityResult
  Obtain results intent from startActivityForResult() as an Observable.
+ Use fragemnt as proxy
 
 [rxjava2 to 2.x](https://github.com/gengqiquan/RxActivityResult/tree/2.x)
 
