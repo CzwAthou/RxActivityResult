@@ -1,6 +1,8 @@
 # RxActivityResult
  Obtain results intent from startActivityForResult() as an Observable.
 
+[rxjava2 to 2.x](https://github.com/gengqiquan/RxActivityResult/tree/2.x)
+
 ## use in java 
 ```
      RxActivityResult.with(MainActivity.this).putString("key", "笑一个")
