@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
-        versionName "0.0.1"
+        versionCode 3
+        versionName "0.0.3"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -40,7 +40,7 @@ publish {
     userOrg = 'gengqiquan'//bintray.com用户名
     groupId = 'com.gengqiquan'//jcenter上的路径
     artifactId = 'RxActivityResult'//项目名称
-    publishVersion = '0.0.1'//版本号
+    publishVersion = '0.0.3'//版本号
     desc = 'make onActivityResult to be rx Observable'//描述，不重要
     website = 'https://github.com/gengqiquan/RxActivityResult'
 }

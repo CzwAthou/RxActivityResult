@@ -2,9 +2,9 @@ package com.gengqiquan.result;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
@@ -23,20 +23,13 @@ public class RxActivityResult {
     private RxActivityResult() {
     }
 
-    public static Builder with(Activity activity) {
-        return new Builder(activity);
-    }
-
-    public static Builder with(FragmentActivity activity) {
-        return new Builder(activity);
-    }
-
-    public static Builder with(android.app.Fragment fragment) {
-        return new Builder(fragment);
-    }
-
-    public static Builder with(Fragment fragment) {
-        return new Builder(fragment);
+    public static Builder with(Context context) {
+        if (context instanceof FragmentActivity)
+            return new Builder((FragmentActivity) context);
+        else if (context instanceof Activity)
+            return new Builder((Activity) context);
+        else
+            throw new RuntimeException("context must be activity or fragment");
     }
 
     public static class Builder {
@@ -49,28 +42,9 @@ public class RxActivityResult {
         }
 
         @SuppressLint("CommitTransaction")
-        private Builder(android.app.Fragment t) {
-            appTransaction = t.getActivity()
-                    .getFragmentManager()
-                    .beginTransaction();
-
-        }
-
-        @SuppressLint("CommitTransaction")
-        private Builder(Fragment t) {
-            isSuperV4 = true;
-            v4Transaction = t.getActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction();
-        }
-
-        @SuppressLint("CommitTransaction")
         private Builder(android.app.Activity t) {
-
             appTransaction = ((android.app.Activity) t).getFragmentManager()
                     .beginTransaction();
-
-
         }
 
         @SuppressLint("CommitTransaction")
@@ -78,7 +52,6 @@ public class RxActivityResult {
             isSuperV4 = true;
             v4Transaction = t.getSupportFragmentManager()
                     .beginTransaction();
-
         }
 
         public Observable<Intent> startActivityWithResult(final Intent intent) {

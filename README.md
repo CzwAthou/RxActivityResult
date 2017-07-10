@@ -53,14 +53,14 @@ call in activity or fragment
 
 ## gradle
 ```
-compile 'com.gengqiquan:RxActivityResult:0.0.1'
+compile 'com.gengqiquan:RxActivityResult:0.0.3'
 ```
 ## maven
 ```
 <dependency>
   <groupId>com.gengqiquan</groupId>
   <artifactId>RxActivityResult</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.3</version>
   <type>pom</type>
 </dependency>
 ```

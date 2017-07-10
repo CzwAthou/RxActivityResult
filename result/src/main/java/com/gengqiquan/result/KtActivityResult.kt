@@ -2,9 +2,9 @@ package com.gengqiquan.result
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentTransaction
 import rx.Observable
@@ -15,42 +15,14 @@ import rx.Observable
  */
 
 object RxKtResult {
-
-    fun with(activity: Activity): Suilder {
+    fun with(context: Context): Suilder {
         val s = Suilder()
-        if (activity is FragmentActivity) {
-            s.bind(activity)
+        if (context is FragmentActivity) {
+            s.bind(context)
         } else {
-            s.bind(activity)
+            s.bind(context as Activity)
         }
         return s
-    }
-
-    fun with(activity: FragmentActivity): Suilder {
-        val s = Suilder()
-        s.bind(activity)
-        return s
-    }
-
-    fun with(fragment: android.app.Fragment): Suilder {
-        val s = Suilder()
-        s.bind(fragment)
-        return s
-    }
-
-    fun with(fragment: Fragment): Suilder {
-        val s = Suilder()
-        s.bind(fragment)
-        return s
-    }
-
-
-    private fun post(result: Result) {
-        if (result.intent != null) {
-            RxActivityResult.subject?.onNext(result)
-        } else {
-            RxActivityResult.subject?.onError(Exception("intent is null"))
-        }
     }
 }
 
@@ -60,30 +32,10 @@ class Suilder {
     internal var appTransaction: android.app.FragmentTransaction? = null
     internal var v4Transaction: FragmentTransaction? = null
 
-
-    @SuppressLint("CommitTransaction")
-    fun bind(t: android.app.Fragment) {
-        appTransaction = t.activity
-                .fragmentManager
-                .beginTransaction()
-
-    }
-
-    @SuppressLint("CommitTransaction")
-    fun bind(t: Fragment) {
-        isSuperV4 = true
-        v4Transaction = t.activity
-                .supportFragmentManager
-                .beginTransaction()
-    }
-
     @SuppressLint("CommitTransaction")
     fun bind(t: Activity) {
-
         appTransaction = t.fragmentManager
                 .beginTransaction()
-
-
     }
 
     @SuppressLint("CommitTransaction")
