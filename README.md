@@ -8,6 +8,7 @@
 ## use in java 
 ```
      RxActivityResult.with(MainActivity.this).putString("key", "笑一个")
+                            .acceptCancel(true)//need deal with Activity.cancel or intent==null
                             .startActivityWithResult(new Intent(MainActivity.this, SecondActivity.class))
                             .subscribe(new Subscriber<Intent>() {
                                 @Override
@@ -17,6 +18,7 @@
 
                                 @Override
                                 public void onError(Throwable e) {
+                                    e.printStackTrace();
                                 }
 
                                 @Override
@@ -25,7 +27,6 @@
                                 }
                             });
 ```
-## use in kotlin
 ### commonly
 ```
             RxResult.with(this)
@@ -40,10 +41,10 @@
                             })
 
 ```
-### anko
+### use in kotlin with anko
 call in activity or fragment
 ```
-  startActivityWithResult<ThirdActivity>("key" to "哭一个", "number" to 100)
+ startActivityWithResult<ThirdActivity>("key" to "哭一个", "number" to 100, acceptCancel = true)
                      .subscribe({ intent ->
                          Toast.makeText(this@SecondActivity, intent.getStringExtra("msg"), Toast.LENGTH_SHORT).show()
                      }) { e ->
@@ -53,14 +54,14 @@ call in activity or fragment
 
 ## gradle
 ```
-compile 'com.gengqiquan:RxActivityResult:0.0.3'
+compile 'com.gengqiquan:RxActivityResult:0.0.4'
 ```
 ## maven
 ```
 <dependency>
   <groupId>com.gengqiquan</groupId>
   <artifactId>RxActivityResult</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <type>pom</type>
 </dependency>
 ```

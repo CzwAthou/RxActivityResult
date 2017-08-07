@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RxActivityResult.with(MainActivity.this).putString("key", "笑一个")
+                        .acceptCancel(true)
                         .startActivityWithResult(new Intent(MainActivity.this, SecondActivity.class))
                         .subscribe(new Subscriber<Intent>() {
                             @Override
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(Throwable e) {
+                                e.printStackTrace();
                             }
 
                             @Override
@@ -45,6 +47,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("onDestroy",this.getClass().getName());
+        Log.d("onDestroy", this.getClass().getName());
     }
 }

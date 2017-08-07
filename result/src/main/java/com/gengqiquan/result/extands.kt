@@ -15,8 +15,8 @@ import java.io.Serializable
  */
 
 
-inline fun <reified T : Activity> Context.startActivityWithResult(vararg params: Pair<String, Any>): Observable<Intent>
-        = RxKtResult.with(this).startActivityWithResult(Intent(this, T::class.java), *params)
+inline fun <reified T : Activity> Context.startActivityWithResult(vararg params: Pair<String, Any>, acceptCancel: Boolean = false): Observable<Intent>
+        = RxActivityResult.with(this).putAll(Bundle().pair(params)).acceptCancel(acceptCancel).startActivityWithResult(Intent(this, T::class.java))
 
 fun Bundle.pair(params: Array<out Pair<String, Any?>>): Bundle {
     val bundle = this

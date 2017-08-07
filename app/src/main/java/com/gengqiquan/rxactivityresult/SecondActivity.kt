@@ -20,7 +20,7 @@ class SecondActivity : Activity() {
             finish()
         }
         jump.setOnClickListener {
-            startActivityWithResult<ThirdActivity>("key" to "哭一个", "number" to 100)
+            startActivityWithResult<ThirdActivity>("key" to "哭一个", "number" to 100, acceptCancel = true)
                     .subscribe({ intent ->
                         Toast.makeText(this@SecondActivity, intent.getStringExtra("msg"), Toast.LENGTH_SHORT).show()
                     }) { e ->

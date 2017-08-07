@@ -37,6 +37,7 @@ public class RxActivityResult {
         Bundle data = new Bundle();
         android.app.FragmentTransaction appTransaction;
         FragmentTransaction v4Transaction;
+        boolean acceptCancel = false;
 
         private Builder() {
         }
@@ -80,6 +81,11 @@ public class RxActivityResult {
                 public Boolean call(Result result) {
                     return request.code == result.code;
                 }
+            }).filter(new Func1<Result, Boolean>() {
+                @Override
+                public Boolean call(Result result) {
+                    return acceptCancel || (!acceptCancel && result.intent != null);
+                }
             }).map(new Func1<Result, Intent>() {
                 @Override
                 public Intent call(Result result) {
@@ -118,16 +124,21 @@ public class RxActivityResult {
             return this;
         }
 
+        public Builder putAll(Bundle bundle) {
+            data.putAll(bundle);
+            return this;
+        }
+
+        public Builder acceptCancel(boolean enable) {
+            acceptCancel = enable;
+            return this;
+        }
+
 
     }
 
     protected static void post(Result result) {
-
-        if (result.intent != null) {
-            subject.onNext(result);
-        } else {
-            subject.onError(new Exception("intent is null"));
-        }
+        subject.onNext(result);
     }
 
 }
