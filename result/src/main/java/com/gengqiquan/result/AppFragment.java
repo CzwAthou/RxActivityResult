@@ -11,13 +11,9 @@ import android.content.Intent;
 public class AppFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (request != null) {
-                RxActivityResult.post(new Result(data, request.code));
-            }
-            request = null;
-            this.getActivity().getFragmentManager().beginTransaction().detach(this).commit();
-        }
+        RxActivityResult.post(new Result(data, request.code, resultCode));
+        request = null;
+        this.getActivity().getFragmentManager().beginTransaction().detach(this).commit();
         super.onActivityResult(requestCode, resultCode, data);
     }
 

@@ -2,14 +2,13 @@ package com.gengqiquan.result;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.subjects.PublishSubject;
 
@@ -24,20 +23,13 @@ public class RxActivityResult {
     private RxActivityResult() {
     }
 
-    public static Builder with(Activity activity) {
-        return new Builder(activity);
-    }
-
-    public static Builder with(FragmentActivity activity) {
-        return new Builder(activity);
-    }
-
-    public static Builder with(android.app.Fragment fragment) {
-        return new Builder(fragment);
-    }
-
-    public static Builder with(Fragment fragment) {
-        return new Builder(fragment);
+    public static Builder with(Context context) {
+        if (context instanceof FragmentActivity)
+            return new Builder((FragmentActivity) context);
+        else if (context instanceof Activity)
+            return new Builder((Activity) context);
+        else
+            throw new RuntimeException("context must be activity or fragment");
     }
 
     public static class Builder {
@@ -50,28 +42,9 @@ public class RxActivityResult {
         }
 
         @SuppressLint("CommitTransaction")
-        private Builder(android.app.Fragment t) {
-            appTransaction = t.getActivity()
-                    .getFragmentManager()
-                    .beginTransaction();
-
-        }
-
-        @SuppressLint("CommitTransaction")
-        private Builder(Fragment t) {
-            isSuperV4 = true;
-            v4Transaction = t.getActivity()
-                    .getSupportFragmentManager()
-                    .beginTransaction();
-        }
-
-        @SuppressLint("CommitTransaction")
         private Builder(android.app.Activity t) {
-
             appTransaction = ((android.app.Activity) t).getFragmentManager()
                     .beginTransaction();
-
-
         }
 
         @SuppressLint("CommitTransaction")
@@ -79,16 +52,16 @@ public class RxActivityResult {
             isSuperV4 = true;
             v4Transaction = t.getSupportFragmentManager()
                     .beginTransaction();
-
         }
 
-        public Observable<Intent> startActivityWithResult(final Intent intent) {
+        public Observable<Result> startActivityWithResult(final Intent intent) {
             if (intent == null) {
                 throw new RuntimeException("intent can not be null");
             }
 
             intent.putExtras(data);
             final Request request = new Request(intent, intent.hashCode());
+
             if (isSuperV4) {
                 final V4Fragment v4Fragment = new V4Fragment();
                 v4Fragment.setRequest(request);
@@ -106,12 +79,7 @@ public class RxActivityResult {
             return subject.filter(new Predicate<Result>() {
                 @Override
                 public boolean test(Result result) throws Exception {
-                    return request.code == result.code;
-                }
-            }).map(new Function<Result, Intent>() {
-                @Override
-                public Intent apply(Result result) throws Exception {
-                    return result.intent;
+                    return request.code == result.requestCode;
                 }
             });
         }
@@ -146,16 +114,15 @@ public class RxActivityResult {
             return this;
         }
 
+        public Builder putAll(Bundle value) {
+            data.putAll(value);
+            return this;
+        }
 
     }
 
     protected static void post(Result result) {
-
-        if (result.intent != null) {
-            subject.onNext(result);
-        } else {
-            subject.onError(new Exception("intent is null"));
-        }
+        subject.onNext(result);
     }
 
 }

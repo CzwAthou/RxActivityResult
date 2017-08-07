@@ -2,6 +2,7 @@ package com.gengqiquan.result
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -17,19 +18,8 @@ import java.util.*
  */
 
 
-inline fun <reified T : Activity> Activity.startActivityWithResult(vararg params: Pair<String, Any>): Observable<Intent>
-        = RxKtResult.with(this).startActivityWithResult(Intent(this, T::class.java), *params)
-
-
-inline fun <reified T : Activity> FragmentActivity.startActivityWithResult(vararg params: Pair<String, Any>): Observable<Intent>
-        = RxKtResult.with(this).startActivityWithResult(Intent(this, T::class.java), *params)
-
-inline fun <reified T : Activity> android.app.Fragment.startActivityWithResult(vararg params: Pair<String, Any>): Observable<Intent>
-        = RxKtResult.with(this).startActivityWithResult(Intent(this.activity, T::class.java), *params)
-
-
-inline fun <reified T : Activity> Fragment.startActivityWithResult(vararg params: Pair<String, Any>): Observable<Intent>
-        = RxKtResult.with(this).startActivityWithResult(Intent(this.activity, T::class.java), *params)
+inline fun <reified T : Activity> Context.startActivityWithResult(vararg params: Pair<String, Any>): Observable<Result>
+        = RxActivityResult.with(this).putAll(Bundle().pair(params)).startActivityWithResult(Intent(this, T::class.java))
 
 fun Bundle.pair(params: Array<out Pair<String, Any?>>): Bundle {
     val bundle = this

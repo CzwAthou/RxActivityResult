@@ -11,11 +11,11 @@ import android.os.Parcelable;
 public class Request  {
     Intent intent;
     int code;
-
     public Request(Intent intent, int code) {
         this.intent = intent;
         this.code = code;
     }
+
 
 
 }

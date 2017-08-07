@@ -21,8 +21,9 @@ class SecondActivity : Activity() {
         }
         jump.setOnClickListener {
             startActivityWithResult<ThirdActivity>("key" to "哭一个", "number" to 100)
-                    .subscribe({ intent ->
-                        Toast.makeText(this@SecondActivity, intent.getStringExtra("msg"), Toast.LENGTH_SHORT).show()
+                    .filter { it.isOK }
+                    .subscribe({ result ->
+                        Toast.makeText(this@SecondActivity, result.data.getStringExtra("msg"), Toast.LENGTH_SHORT).show()
                     }) { e ->
                         e.printStackTrace()
                     }

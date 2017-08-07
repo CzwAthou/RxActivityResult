@@ -7,9 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.gengqiquan.result.Result;
 import com.gengqiquan.result.RxActivityResult;
 
-import java.util.function.Consumer;
+import io.reactivex.functions.Consumer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,10 +25,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 RxActivityResult.with(MainActivity.this).putString("key", "笑一个")
                         .startActivityWithResult(new Intent(MainActivity.this, SecondActivity.class))
-                        .subscribe(new Consumer<Intent>() {
+                        .subscribe(new Consumer<Result>() {
                             @Override
-                            public void accept(Intent intent) throws Exception {
-                                tv.setText(intent.getStringExtra("msg"));
+                            public void accept(Result result) throws Exception {
+                                if (result.isOK())
+                                    tv.setText(result.data.getStringExtra("msg"));
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                throwable.printStackTrace();
                             }
                         });
             }
@@ -37,6 +44,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("onDestroy",this.getClass().getName());
+        Log.d("onDestroy", this.getClass().getName());
     }
 }

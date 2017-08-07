@@ -1,5 +1,6 @@
 package com.gengqiquan.result;
 
+import android.app.Activity;
 import android.content.Intent;
 
 /**
@@ -7,14 +8,17 @@ import android.content.Intent;
  */
 
 public class Result {
-    Intent intent;
+    public Intent data;
+    int requestCode;
+    public int resultCode;
 
-    public Result(Intent intent, int code) {
-        this.intent = intent;
-        this.code = code;
+    public Result(Intent intent, int requestCode, int resultCode) {
+        this.data = intent;
+        this.requestCode = requestCode;
+        this.resultCode = resultCode;
     }
 
-    int code;
-
-
+    public boolean isOK() {
+        return resultCode == Activity.RESULT_OK;
+    }
 }
