@@ -27,20 +27,7 @@
                                 }
                             });
 ```
-### commonly
-```
-            RxResult.with(this)
-                    .putString("key","笑一个")
-                    .start(Intent(this@MainActivity, SecondActivity::class.java))
-                    .subscribe({ intent ->
-                        Toast.makeText(this@MainActivity, intent.getStringExtra("msg"), Toast.LENGTH_SHORT).show()
-                    },
-                            {
-                                e ->
-                                e.printStackTrace()
-                            })
 
-```
 ### use in kotlin with anko
 call in activity or fragment
 ```
